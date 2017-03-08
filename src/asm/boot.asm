@@ -1,3 +1,4 @@
+extern kmain
 global start
 
 section .text
@@ -57,7 +58,7 @@ start:
     mov es, ax
 
     ; Jump to long mode!
-    jmp gdt64.code:long_mode_start
+    jmp gdt64.code:kmain
 
 section .bss ; block started by symbol
     ; Entries in the bss section are automatically set to zero
@@ -91,47 +92,3 @@ gdt64:
     dw .pointer - gdt64 - 1
     dq gdt64
 
-section .text
-bits 64
-long_mode_start:
-
-    mov rax, 0x2f592f412f4b2f4f
-    mov qword [0xb80a0], rax
-
-    mov word [0xb80a8], 0x022c ; ,
-    mov word [0xb80aa], 0x0220 ;
-
-    ; Write "Hello, World!" to screen
-    ;
-    ;   size place      thing
-    ;   |    |          |
-    ;   V    V          V
-    mov word [0xb80ac], 0x0248 ; H
-    ;            |           |
-    ;            V           |
-    ; memory mapped screen,  |
-    ; starting at upper left |
-    ; corner with 0xb8000   /
-    ;                      /
-    ;                     V
-    ;
-    ;   __ background color
-    ; /  __foreground color
-    ; | /
-    ; V V
-    ; 0 2 48 <- letter, in ASCII
-    mov word [0xb80ae], 0x0265 ; e
-    mov word [0xb80b0], 0x026c ; l
-    mov word [0xb80b2], 0x026c ; l
-    mov word [0xb80b4], 0x026f ; o
-    mov word [0xb80b6], 0x022c ; ,
-    mov word [0xb80b8], 0x0220 ;
-    mov word [0xb80ba], 0x0277 ; W
-    mov word [0xb80bc], 0x026f ; o
-    mov word [0xb80be], 0x0272 ; r
-    mov word [0xb80c0], 0x026c ; l
-    mov word [0xb80c2], 0x0264 ; d
-    mov word [0xb80c4], 0x0221 ; !
-    mov word [0xb80c6], 0x0220 ;
-
-    hlt
