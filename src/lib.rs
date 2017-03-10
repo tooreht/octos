@@ -2,7 +2,7 @@
 #![no_std]
 
 #[lang = "eh_personality"]
-extern fn eh_personality() {
+extern fn rust_eh_personality() {
 
 }
 
@@ -21,5 +21,3 @@ pub extern fn kmain() -> ! {
 
     loop {}
 }
-
-
